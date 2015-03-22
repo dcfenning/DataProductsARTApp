@@ -1,40 +1,46 @@
 ##ui.r for data products project
-
+library(shiny)
 shinyUI(fluidPage(
         titlePanel("US Assisted Reproductive Technologies Data 2012 Analysis Tool"),
         sidebarLayout(
-
+ 
         sidebarPanel(
               h3('Select data you would like to view'),
-              selectInput("state_in", "Select a State you would like to compare", choices = state_list, selected=NULL),
-              selectInput("clinic_in", "If you know the clinic, select a clinic to compare", choices = sort(fdata$PrevClinName1), selected=NULL),
-              selectInput("age_in", "Select an age group", choices = age, selected=NULL),
-              selectInput("fstats_in", "Select a statistic you would like to see", choices = fstats_list, selected=NULL),
+              selectInput("state_in", "Select a State", choices = states, selected="ALASKA"),
+              br(),
+              selectInput("fstats_in", "Select an IVF statistic", choices = fstats_list, selected="FshNDCycle"), 
+              selectInput("age_in", "...and please select an age group.", 
+                            choices = c("<35"=1,"35-37"=2,"38-40"=3,"41-42"=4,"43-44"=5,">44"=6), 
+                            selected=1),
+                
               h4('Please note data is only available for FRESH NON DONOR EGGS ONLY')
         ),
         
         mainPanel(
           tabsetPanel(
             tabPanel("Data Table",
-                    h2('Fertility Calculations'),
+                     h2('Introduction'),
                     p("Welcome to the Assisted Reproductive Technology data tool.
-                      This interactive tool summarises the most recent data collected by the Centers for Disesase Control and Prevention on Assisted Reproductive Technology.
+                      This interactive tool summarises the most recent data collected by the Centers for Disesase Control and Prevention on Assisted Reproductive Technology in the USA.
                       Please see the User Guide tab for more information about the data and how to use this tool."),
                     br(),
-                    textOutput("fstats_out"),
-                    br(),
-                    textOutput("clinic_out"),
-                    verbatimTextOutput("cstats_out"),
-                    br(),
+                    p("To get started simply choose from the dropdown lists on the left handside of the page the data you would like to see.  Don't
+                      forget to check out the interactive map tab that shows you an overview of the statistics by state"),
+                    h2('Averages by State'),
                     textOutput("state_out"),          
                     verbatimTextOutput("smean_out"),
                     br(),
-                    h4('Data Table with the Averages for all states in US'),
-                    dataTableOutput("allmean_out")
+                    h2('All Fertility Clinics in State and Number of IVF cycles performed in 2012'),
+                    dataTableOutput("subdata_out")
             ),
             tabPanel("Interactive Map", 
-                     h2('Interactive Map'), 
-                     htmlOutput("gplot_out")
+                     h2('Interactive Map'),
+                     br(),
+                     p("Use the drop down lists on the left hand side of the page to select a statistic and age group.  Hover over each state for the exact average based
+                       on your selection."),
+                     htmlOutput("gplot_out"),
+                     br(),
+                     p("Note, there is no data available for Wyoming and New England")
             ),
             tabPanel("User Guide", 
                      h2('User Guide'),
